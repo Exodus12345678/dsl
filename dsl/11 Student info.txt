@@ -1,0 +1,129 @@
+#include<bits/stdc++.h>
+using namespace std;
+class Student
+{
+int marks;
+char name[100],subject[100],code[100],rollno[100];
+public:
+void accept()
+{
+cout<<"Enter roll number : ";
+cin >> rollno;
+cout<<"Enter name : ";
+cin.ignore();
+cin.getline(name,100);
+cout<<"Enter subject code : ";
+cin >> code;
+cout<<"Enter subject name : ";
+cin.ignore();
+cin.getline(subject,100);
+cout<<"Enter marks : ";
+cin >> marks;
+}
+void output()
+{
+cout<<"---------------------------------------"<<endl;
+cout<<"Roll Number : "<<rollno<<endl;
+cout<<"Name : "<<name<<endl;
+cout<<"Subject Code : "<<code<<endl;
+cout<<"Subject Name : "<<subject<<endl;
+cout<<"Marks : "<<marks<<endl;
+cout<<"---------------------------------------"<<endl;
+}
+char* get_roll()
+{
+return rollno;
+}
+};
+int main()
+{
+int ch;
+char roll[100];
+int c = 0;
+Student s;
+do
+{
+cout<<"================================================================="<<endl;
+cout<<"Press 1 to insert a new record : "<<endl;
+cout<<"Press 2 to display a particular record : "<<endl;
+cout<<"Press 3 to delete a record : "<<endl;
+cout<<"Press 0 to Exit : "<<endl;
+cout<<"================================================================="<<endl;
+cin >> ch;
+switch(ch)
+{
+case 1:
+{
+ofstream f;
+f.open("Student.dat",ios::app);
+s.accept();
+f.write((char*)&s,sizeof(s));
+c++;
+f.close();
+}
+break;
+case 2:
+{
+cout<<"Enter the Roll Number : ";
+cin >> roll;
+bool flag = 0;
+ifstream f;
+f.open("Student.dat");
+for(int i = 0;i<c;i++)
+{
+f.read((char*)&s,sizeof(s));
+if(strcmp(s.get_roll(),roll) == 0)
+{
+cout<<"Record found with following details : "<<endl;
+s.output();
+flag = 1;
+break;
+}
+cout<<endl;
+}
+if(flag == 0)
+cout<<"No such record found."<<endl;
+f.close();
+break;
+}
+case 3:
+{
+cout<<"Enter the Roll Number to be deleted : ";
+cin >> roll;
+ofstream fout;
+ifstream fin;
+bool flag = false;
+fout.open("temp.dat",ios::app);
+fin.open("Student.dat");
+for(int i = 0;i<c;i++)
+{
+fin.read((char*)&s,sizeof(s));
+if(strcmp(s.get_roll(),roll) == 0)
+{
+flag = true;
+continue;
+}
+fout.write((char*)&s,sizeof(s));
+}
+if(!flag)
+{
+cout<<"No such record found."<<endl;
+break;
+}
+else
+cout<<"Record is deleted successfully."<<endl;
+fin.close();
+fout.close();
+remove("Student.dat");
+rename("temp.dat","Student.dat");
+break;
+}
+case 0:
+cout<<"Exited"<<endl;
+break;
+default:
+cout<<"Invalid Choice !!! Please try again."<<endl;
+}
+}while(ch != 0);
+return 0;
+}
